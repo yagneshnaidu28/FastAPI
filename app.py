@@ -118,10 +118,9 @@ def delete_item(item_id: str, db: Session = Depends(get_db)):
     # Send what was deleted back
     return {"message": "item deleted", "item": Item(id=db_item.id, name=db_item.name, description=db_item.description)}
 
-# run api
 if __name__ == "__main__":
     uvicorn.run(
-        "main1:app",
+        "app:app",  # Changed from "main1:app" to "app:app"
         host="localhost",
         port=8000,
         reload=True
