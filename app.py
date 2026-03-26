@@ -11,7 +11,7 @@ from sqlalchemy.orm import sessionmaker, Session, declarative_base
 # ----------------- DATABASE SETUP ----------------- #
 # Replace with your actual MySQL username, password, localhost/ip, and database name
 # format: "mysql+pymysql://<user>:<password>@<host>:<port>/<database_name>"
-SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:password@localhost:3306/fastapi_db"
+SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:Mallarapu#28@@localhost:3306/fastapi_db"
 
 # Create Database engine
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
