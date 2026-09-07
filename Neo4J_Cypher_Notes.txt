@@ -43,13 +43,13 @@ Relationship: A directed, named connection that links two nodes together to repr
 
 =>Filtering/Querying/Read:
 
-*MATCH (n:PLAYER) RETURN n ; 'match basically look for values where node is player,stores it to temporary variable,returns it using return keyword.'
+*MATCH (n:PLAYER) RETURN n; 'match basically look for values where node is player,stores it to temporary variable,returns it using return keyword.'
 
 *MATCH (n:PLAYER{age:33}) return n; 'matches value of age in node player where it is 3 then store that to n returns it ' 
 
 *MATCH (n:PLAYER) return n.age; "return all the nodes named player" 
 
-*MATCH (p:Player {name: "LeBron James"})RETURN p.name, p.age;   Find a specific node by label and property:
+*MATCH (p:Player {name: "LeBron James"})RETURN p.name, p.age;   Find a specific node by label and property
 
 *MATCH (p:Player)WHERE p.age > 35 RETURN p.name, p.age ORDER BY p.age DESC;  find all age>35 order in descending.
 
@@ -60,7 +60,7 @@ Relationship: A directed, named connection that links two nodes together to repr
 
 *MATCH (p:Player {name: "LeBron James"}) SET p:AllStar RETURN p; Add a new label to a node
 
-*MATCH (:Player {name: "LeBron James"})-[r:PLAYS_FOR]->(:Team {name: "LA Lakers"}) SET r.contractYears = 2 RETURN r;  Update a property on a relationship
+*MATCH (:Player {name: "LeBron James"})-[r:PLAYS_FOR]->(:Team {name: "LA Lakers"}) SET r.contractYears = 2 RETURN r;udate a property on a relationship
 
 *MATCH (p:Player {name: "Stephen Curry"}) REMOVE p.mvp_awards RETURN p;  Remove a property (REMOVE)
 
@@ -72,4 +72,75 @@ Relationship: A directed, named connection that links two nodes together to repr
 
 *MATCH (p:Player {name: "Stephen Curry"}) WHERE NOT (p)--() DELETE p;  Delete a specific node (only works if it has no relationships)
 
-*MATCH (p:Player {name: "Stephen Curry"}) DETACH DELETE p; Delete a node and all connected relationships simultaneously
+*MATCH (p:Player {name: "Stephen Curry"}) DETACH DELETE p; Delete a node and all connected relationships simultaneously.
+
+
+
+
+ACID compliance
+Neo4j is fully ACID compliant. This means that:
+
+Atomicity - If a part of a transaction fails, the database state is left unchanged.
+
+Consistency — Every transaction leaves the database in a consistent state.
+
+Isolation — During a transaction, modified data cannot be accessed by other operations.
+
+Durability — The DBMS can always recover the results of a committed transaction.
+
+What is Aura?
+Aura is Neo4j’s fully managed cloud service. It consists of AuraDB and AuraDS. AuraDB is a graph database service for developers building intelligent applications, and AuraDS is a Graph Data Science (GDS) service for data scientists building predictive models and analytics workflows.
+
+
+
+The data entities in a Neo4j graph database are called nodes. Nodes are referred to in Cypher using parentheses ().
+
+Nodes in a graph can be connected with relationships. A relationship must have a start node, an end node, and exactly one type. Relationships are represented in Cypher with arrows (e.g. -->) indicating the direction of a relationship.
+Unlike nodes, information within a relationship pattern must be enclosed by square brackets.
+
+
+Paths in a graph consist of connected nodes and relationships. Exploring these paths sits at the very core of Cypher.
+MATCH p = SHORTEST 1 (:Person {name: 'Anna'})-[:KNOWS]-+(:Person {nationality: 'Canadian'})RETURN p
+
+
+
+()-->()<--()
+
+
+The MATCH clause is used to find a specific pattern in the graph, such as a specific node. The RETURN clause specifies what of the found graph pattern to return.
+
+
+
+
+MATCH (n:Movie {released:1998}) return n.title as title order by title DESC
+
+  match (n:Movie{released:1996}) RETURN n.title LIMIT 2
+  
+    match (n:Movie{released:1996}) RETURN n.title OFFSET 2
+	MATCH(n:Movie{released:1998}) return n.title;
+	
+	
+	MATCH(n:Person) WHERE n.born>=1949 and n.born<1998 return n as millineals ORDER by millineals ASC
+	
+	
+	Finding connected nodes
+	To discover how nodes are connected to one another, relationships must be added to queries. Queries can specify relationship types, properties, and direction, as well as the start and end nodes of the pattern.
+	match(m:Movie{title:"The Matrix"})<-[d:DIRECTED]-(p:Person) return p as person;
+	
+	
+	
+	match(tom:Person{name:"Tom Hanks"})-[r]->(m:Movie) RETURN type(r) as type,m.title as movie;
+	
+	MATCH (:Person {name:'Tom Hanks'})-[r:!ACTED_IN]->(m:Movie)Return type(r) AS type, m.title AS movies
+	
+	
+To search for patterns of a fixed length, specify the distance (hops) between the nodes in the pattern by using a quantifier ({n}). For example, the following query matches all Person nodes exactly 2 hops away from Tom Hanks and returns the first five rows. The `DISTINCT operator ensures that the result contain no duplicate values.
+
+
+
+
+
+The SHORTEST keyword can be used to find a variation of the shortest paths between two nodes. In this example, ALL SHORTEST paths between the two nodes Keanu Reeves and Tom Cruise are found. The count() function calculates the number of these shortest paths while the length() function calculates the length of each path in terms of traversed relationships.
+MATCH p = ALL SHORTEST (:Person {name:"Keanu Reeves"})--+(:Person {name:"Tom Cruise"})
+RETURN count(p) AS pathCount, length(p) AS pathLength
+
